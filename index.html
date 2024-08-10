@@ -42,6 +42,7 @@
 </head>
 
 <body>
+    <img height="300px" src="images/banner.jfif" alt="">
     <h1>猜數字挑戰賽!</h1>
     <h3 class="tips"> 遊戲說明:</h3>
     <div>請猜一個1~50的數字，共有5次機會</div><br>
@@ -52,12 +53,31 @@
     <button id="restart">重新開始</button>
     <h3 id="guess-count"> </h3>
     <hr>
+    <div style="background-color: brown;color: white;padding: 2px 0;">遊戲紀錄:</div>
+    <p id="records">
 
+        <!-- <div>時間:2024/4/5<br>遊戲結果:猜對了<br>次數:5次</div>
+    <hr>
+    <div>時間:2024/4/5<br>遊戲結果:猜對了<br>次數:5次</div> -->
+
+    </p>
     <script>
+        function showRecords() {
+            recordsEl.innerHTML = "";
+            for (let i = 0; i < records.length; i++) {
+                recordsEl.innerHTML += `
+                <hr>
+                <div>時間:${records[i][0]}<br>
+                    遊戲結果:${records[i][1]}<br>
+                    次數:${records[i][2]}次
+                <div>
+                `;
+            }
+        }
+
         function answer() {
             if (count == maxCount) {
-                resultEl.innerHTML = "請重新開始遊戲";
-                return
+                return;
             }
             let number = numberEl.value;
 
@@ -74,6 +94,10 @@
             count++;
             if (number == computer) {
                 resultEl.innerHTML = "猜對了";
+                restartbtnEl.disabled = false;
+
+                records.push([new Date().toLocaleString(), "猜對了", count]);
+                showRecords();
                 count = 0;
                 return;
             }
@@ -83,6 +107,10 @@
                 guessEl.innerHTML = `猜錯${count}次!`;
                 if (count == maxCount) {
                     resultEl.innerHTML = `遊戲結束<br>答案是${computer}`;
+                    resultEl.innerHTML += "<br>請重新開始遊戲";
+                    restartbtnEl.disabled = false;
+                    records.push([new Date().toLocaleString(), "猜錯了", count]);
+                    showRecords();
                 }
                 else if (number > computer) {
                     resultEl.innerHTML = "猜低一點";
@@ -100,6 +128,10 @@
         const resultEl = document.querySelector("#result");
         const guessEl = document.querySelector("#guess-count");
         const restartbtnEl = document.querySelector("#restart");
+        const recordsEl = document.querySelector("#records");
+
+        restartbtnEl.disabled = true;
+
         restartbtnEl.addEventListener("click", () => {
             count = 0;
             resultEl.innerHTML = "";
@@ -111,11 +143,20 @@
         const maxCount = 5;
 
         let count = 0;
-        let computer = 50;
+        let computer = getRandomInt(1, 50);
 
-        console.log(restartbtnEl, resultEl, numberEl, answerbtnEl);
+        console.log(computer, recordsEl, restartbtnEl, resultEl, numberEl, answerbtnEl);
+
+        console.log(new Date().toLocaleString());
+        //遊玩時間
+        //猜對了，次數
+        //猜錯了，次數
+        let records = [];//Array()
 
 
+        function getRandomInt(start, end) {
+            return Math.floor(Math.random() * (end - start + 1)) + start;
+        }
         // function isValid(number, start, end) {
         //     return number >= start && number <= end
 
